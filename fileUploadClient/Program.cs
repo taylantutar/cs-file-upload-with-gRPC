@@ -1,19 +1,27 @@
-using fileUploadClient.Services;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-
-// Add services to the container.
-builder.Services.AddGrpc();
+﻿using System.Reflection;
+using System.IO;
 
 
-var app = builder.Build();
-app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
-app.MapGrpcService<GreeterService>();
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+Console.WriteLine(Environment.CurrentDirectory);
 
-app.Run();
+
+var files = Directory.EnumerateFiles(Path.Combine(Environment.CurrentDirectory, "wwwroot"));
+
+foreach (var file in files)
+{
+    using FileStream fileStream = new FileStream(file, FileMode.Open);
+    byte[] buffer = new byte[2];
+    int readedData = 0;
+    while ((readedData = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+    {
+        Console.WriteLine(readedData);
+    }
+
+}
+
+Console.ReadLine();
+
+
+
+
