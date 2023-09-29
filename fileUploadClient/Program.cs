@@ -17,7 +17,6 @@ foreach (var file in files)
     {
         Console.WriteLine(readedData);
     }
-
 }
 
 Console.ReadLine();

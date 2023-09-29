@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "fileServer";
+
+package fileUD;
+
+import "google/protobuf/wrappers.proto";
+
+service FileUD {
+ rpc FileUpload(stream fileUploadRequest) returns (google.protobuf.BoolValue);
+ rpc FileDownload (fileInfo) returns(stream fileDownloadResponse);
+}
+
+message fileUploadRequest{
+    int64 fileSize = 1;
+    bytes buffer = 2;
+    int32 readedData = 3;
+    string fullname = 4;
+}
+
+message  fileInfo {
+    string fullName = 1;
+}
+
+message fileDownloadResponse{
+    int64 fileSize = 1;
+    bytes buffer = 2;
+    int32 readedData = 3;
+}
