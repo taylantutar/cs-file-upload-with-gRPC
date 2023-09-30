@@ -1,5 +1,4 @@
 using Grpc.Core;
-using fileServer;
 
 namespace fileServer.Services;
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "fileServer";
+option csharp_namespace = "fileClient";
 
 package fileUD;
 
