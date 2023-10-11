@@ -1,3 +1,5 @@
+using System.Net;
+using System.IO;
 using fileClient;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -48,9 +50,25 @@ namespace fileServer.Services
             }
         }
 
-        public override Task FileDownload(fileInfo request, IServerStreamWriter<fileDownloadResponse> responseStream, ServerCallContext context)
+        public override async Task FileDownload(fileInfo request, IServerStreamWriter<fileDownloadResponse> responseStream, ServerCallContext context)
         {
-            return base.FileDownload(request, responseStream, context);
+            Console.WriteLine($"File: {request.FullName}");
+
+            string path = Path.Combine(_webHostEnvironment.WebRootPath, "files");
+            var buffer = new Byte[64];
+            using FileStream fs = new FileStream($"{path}/{request.FullName}", FileMode.Open);
+
+            var responseModel = new fileDownloadResponse()
+            {                FileSize = fs.Length,
+                ReadedData = 0
+            };
+
+            while((responseModel.ReadedData = await fs.ReadAsync(buffer,0, buffer.Length))> 0)
+            {
+                responseModel.Buffer = Google.Protobuf.ByteString.CopyFrom(buffer);
+
+                await responseStream.WriteAsync(responseModel);
+            }
         }
     }
 }
